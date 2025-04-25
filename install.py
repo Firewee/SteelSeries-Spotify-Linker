@@ -34,7 +34,7 @@ def ask_installation_path():
     response = input("Do you want to change the installation path? (y/N) ").strip().lower()
 
     if response == "y":
-        while True:  # Équivalent de do-while
+        while True:
             installation_path = input("Enter the installation path (absolute path required): ").strip()
 
             if not os.path.isabs(installation_path):
@@ -149,16 +149,31 @@ def create_user_preferences():
 
 def create_shortcut(installation_path):
     script_path = os.path.join(installation_path, "launcher.exe")
-    shortcut_path = os.path.join(os.environ['APPDATA'], "Microsoft", "Windows", "Start Menu", "Programs", "SpotifyLinker.lnk")
+    shortcut_path = os.path.join(os.environ['APPDATA'], "Microsoft", "Windows", "Start Menu", "Programs", APPLICATION_NAME + ".lnk")
     icon_path = os.path.join(installation_path, "assets", "icon.ico")
 
-    # Créer le raccourci principal
-    powershell_command = f'$WshShell = New-Object -comObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut("{shortcut_path}"); $Shortcut.TargetPath = "{script_path}"; $Shortcut.IconLocation = "{icon_path}"; $Shortcut.Save()'
+    # Create the main shortcut
+    powershell_command = f'''
+    $WshShell = New-Object -comObject WScript.Shell;
+    $Shortcut = $WshShell.CreateShortcut("{shortcut_path}");
+    $Shortcut.TargetPath = "{script_path}";
+    $Shortcut.WorkingDirectory = "{installation_path}";
+    $Shortcut.IconLocation = "{icon_path}";
+    $Shortcut.Save()
+    '''
     subprocess.run(["powershell", "-Command", powershell_command], check=True)
 
-    # Créer le raccourci de débogage
+    # Create the debug shortcut
     debug_shortcut_path = os.path.join(installation_path, "launcher_debug.lnk")
-    debug_powershell_command = f'$WshShell = New-Object -comObject WScript.Shell; $Shortcut = $WshShell.CreateShortcut("{debug_shortcut_path}"); $Shortcut.TargetPath = "{script_path}"; $Shortcut.Arguments = "--debug"; $Shortcut.IconLocation = "{icon_path}"; $Shortcut.Save()'
+    debug_powershell_command = f'''
+    $WshShell = New-Object -comObject WScript.Shell;
+    $Shortcut = $WshShell.CreateShortcut("{debug_shortcut_path}");
+    $Shortcut.TargetPath = "{script_path}";
+    $Shortcut.Arguments = "--debug";
+    $Shortcut.WorkingDirectory = "{installation_path}";
+    $Shortcut.IconLocation = "{icon_path}";
+    $Shortcut.Save()
+    '''
     subprocess.run(["powershell", "-Command", debug_powershell_command], check=True)
 
     print(f"Debug shortcut created at {debug_shortcut_path}")
@@ -167,36 +182,16 @@ def create_shortcut(installation_path):
 
 def add_to_startup(shortcut_path):
     startup_dir = os.path.join(os.getenv('APPDATA'), 'Microsoft\\Windows\\Start Menu\\Programs\\Startup')
-    startup_shortcut = os.path.join(startup_dir, "SpotifyLinker.lnk")
+    startup_shortcut = os.path.join(startup_dir, APPLICATION_NAME + ".lnk")
 
-    if os.path.exists(startup_shortcut):
-        os.unlink(startup_shortcut)
-
-    os.symlink(shortcut_path, startup_shortcut)
-
-    print(f"Added shortcut to startup: {startup_shortcut}")
-
-def add_to_startup_registry(installation_path):
-    run_key = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
-    info_key = r"SOFTWARE\SpotifyLinker"
     try:
-        # Ajouter au démarrage
-        reg_run = winreg.OpenKey(winreg.HKEY_CURRENT_USER, run_key, 0, winreg.KEY_SET_VALUE)
-        winreg.SetValueEx(reg_run, "SpotifyLinker", 0, winreg.REG_SZ, 
-                          os.path.join(installation_path, "launcher.exe"))
-        winreg.CloseKey(reg_run)
+        if os.path.exists(startup_shortcut) or os.path.islink(startup_shortcut):
+            os.unlink(startup_shortcut)
 
-        # Ajouter des informations supplémentaires
-        reg_info = winreg.CreateKey(winreg.HKEY_CURRENT_USER, info_key)
-        winreg.SetValueEx(reg_info, "Name", 0, winreg.REG_SZ, APPLICATION_NAME)
-        winreg.SetValueEx(reg_info, "Publisher", 0, winreg.REG_SZ, PUBLISHER)
-        winreg.SetValueEx(reg_info, "Version", 0, winreg.REG_SZ, __version__)
-        winreg.CloseKey(reg_info)
-
-        print("Added to startup registry with additional information.")
+        shutil.copy(shortcut_path, startup_shortcut)
+        print(f"Added shortcut to startup: {startup_shortcut}")
     except Exception as e:
-        print(f"Error adding to startup registry: {e}")
-        abort_installation()
+        print(f"Error adding shortcut to startup: {e}")
 
 def add_to_registry(installation_path):
     uninstall_exe = os.path.join(installation_path, "uninstall.exe")
@@ -241,10 +236,9 @@ if __name__ == "__main__":
     print(f"Shortcut created at {shortcut}")
 
     # Ask to add to startup
-    add_to_startup(shortcut)
-    add_startup = input("Do you want to add SpotifyLinker to startup? (Y/n) ").strip().lower()
+    add_startup = input("Do you want to launch the application on startup? (Y/n) ").strip().lower()
     if add_startup != "n":
-        add_to_startup_registry(installation_path)
+        add_to_startup(shortcut)
 
     # Add to registry
     print("Adding to registry...")

@@ -5,7 +5,7 @@ This section provides a step-by-step guide on how to set up a Spotify applicatio
 1. Log in to the [Spotify Developer Dashboard](https://developer.spotify.com/documentation/web-api).
 2. Once logged in, navigate to your profile and select `Dashboard`.
 3. On the `Dashboard` click on "Create app".
-4. Fill in all the required fields, as illustrated below. The configuration details are generally straightforward, with the exception of the "Redirect URI," which should point to localhost.
+4. Fill in all the required fields, as illustrated below. The configuration details are generally straightforward, with the exception of the "Redirect URI," which should point to 127.0.0.1 (localhost).
 
 ![spotify_create_app](https://github.com/ImFireGod/SteelSeries-Spotify-Linker/assets/49344172/baea1ae9-6144-4862-a5e2-a10cef855c9d)
 
@@ -23,7 +23,7 @@ Copy and paste the following information into the `config.json` file (located in
 {
     "spotify_client_id": "SPOTIFY_CLIENT_ID",
     "spotify_client_secret": "YOUR_SPOTIFY_CLIENT_SECRET",
-    "spotify_redirect_uri": "http://localhost:2408/callback",
+    "spotify_redirect_uri": "http://127.0.0.1:2408/callback",
     "local_port": 2408,
     ...
 }

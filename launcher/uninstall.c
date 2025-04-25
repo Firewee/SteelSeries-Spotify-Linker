@@ -4,6 +4,7 @@
 #include <process.h>
 
 #define MAX_PATH 260
+#define APPLICATION_LNK_NAME "Spotify Linker.lnk"
 
 /**
  * Removes a directory and its contents without prompting the user.
@@ -38,6 +39,15 @@ int GetInstallPath(char* installPath, DWORD bufferSize) {
     return (result == ERROR_SUCCESS) && (dataType == REG_SZ);
 }
 
+void RemoveStartupShortcut() {
+    char startupPath[MAX_PATH];
+    if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_STARTUP, NULL, 0, startupPath))) {
+        strcat(startupPath, "\\" APPLICATION_LNK_NAME);
+        DeleteFile(startupPath);
+        printf("SpotifyLinker shortcut has been removed from the Startup folder.\n");
+    }
+}
+
 /**
  * Finishes the uninstallation process by removing the installation directory,
  * registry keys, and the Start Menu shortcut.
@@ -48,6 +58,7 @@ void FinishUninstall(const char* installPath) {
     Sleep(1000);
     RemoveDirectorySilently(installPath);
     RegDeleteKey(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\SpotifyLinker");
+    RemoveStartupShortcut();
     printf("SpotifyLinker has been fully uninstalled.\n");
     
     if (GetFileAttributes(installPath) != INVALID_FILE_ATTRIBUTES) {
@@ -58,7 +69,7 @@ void FinishUninstall(const char* installPath) {
     } else {
         char startMenuPath[MAX_PATH];
         if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_STARTMENU, NULL, 0, startMenuPath))) {
-            strcat(startMenuPath, "\\Programs\\SpotifyLinker.lnk");
+            strcat(startMenuPath, "\\Programs\\" APPLICATION_LNK_NAME);
             DeleteFile(startMenuPath);
             printf("SpotifyLinker shortcut has been removed from the Start Menu.\n");
             MessageBox(NULL, "SpotifyLinker has been successfully uninstalled.", "Uninstall Complete", MB_OK | MB_ICONINFORMATION);
