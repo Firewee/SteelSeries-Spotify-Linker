@@ -4,11 +4,13 @@ from requests import get, post
 from base64 import b64encode
 from time import time
 from json import loads, dumps
+
+import ssl
 import ctypes
 import webbrowser
 import logging
 
-from src.utils import fetch_app_data_path
+from src.utils import fetch_app_data_path, generate_cert
 
 logger = logging.getLogger('SpotifyAPI')
 
@@ -72,7 +74,9 @@ class SpotifyAPI:
 
             server = self.start_server()
             webbrowser.open(url)
-            server.handle_request()
+
+            while server.code is None and server.error is None:
+                server.handle_request()
 
             if server.code:
                 self.retrieve_token(server.code)
@@ -186,7 +190,15 @@ class SpotifyAPI:
 
     def start_server(self, handler=RequestHandler):
         server = HTTPServer(("localhost", self.port), handler)
+
+        if self.redirect_uri.startswith("https"):
+            generate_cert()
+            context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+            context.load_cert_chain(fetch_app_data_path('cert.pem'), fetch_app_data_path('key.pem'))
+            server.socket = context.wrap_socket(server.socket, server_side=True)
+
         server.allow_reuse_address = True
         server.code = None
         server.error = None
         return server
+        
