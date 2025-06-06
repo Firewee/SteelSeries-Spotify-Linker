@@ -24,10 +24,14 @@ SteelSeries Spotify Linker is a project designed to display the current music pl
 ## 🛠️ Prerequisites
 You'll need Python version 3.8 or higher, which can be installed from [here](https://www.python.org/downloads/). <br>You'll also need the [SteelSeries GG](https://fr.steelseries.com/gg/engine) software.
 
+> ⚠️ Make sure to install the official online version of Python, not the one from the Microsoft Store. The Microsoft Store version may cause issues during installation or execution.
+
 ## 🚀 Installation
 1. Download the [latest version](https://github.com/ImFireGod/SteelSeries-Spotify-Linker/releases/latest) of the program and extract the files.
 2. Run `install.bat` to start the installation prompt and set up your Spotify credentials.<br>For detailed instructions, refer to "[Spotify API configuration](CONFIGURE_SPOTIFY_API.md)".
 3. You can now launch the application from the Windows Startup menu.
+
+`Having trouble installing?` Please refer to the [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) document for help.
 
 **📄 <ins>Note :</ins> When you launch the program for the first time, a web page will open to authorize the Spotify API to connect to your account.**
 

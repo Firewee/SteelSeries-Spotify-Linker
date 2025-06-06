@@ -1,7 +1,8 @@
 from threading import Thread
 from time import sleep, time
+from tkinter import messagebox
+import tkinter as tk
 import logging
-import ctypes
 
 from src.SpotifyAPI import SpotifyAPI
 from src.SpotifyPlayer import SpotifyPlayer
@@ -94,7 +95,15 @@ class DisplayManager:
         self.update_preferences()
 
         logger.info("Configuration updated")
-        ctypes.windll.user32.MessageBoxW(0, "Configuration successfully updated", "Info", 0x40 | 0x1)
+        
+        # Show a message box to inform the user
+        def tk_popup():
+            root = tk.Tk()
+            root.withdraw()
+            messagebox.showinfo("Info", "Configuration successfully updated")
+            root.destroy()
+
+        Thread(target=tk_popup).start()
 
     @staticmethod
     def _fetch_and_update_song(spotify_api, player):

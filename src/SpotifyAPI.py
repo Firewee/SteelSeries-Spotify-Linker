@@ -10,7 +10,8 @@ import ctypes
 import webbrowser
 import logging
 
-from src.utils import fetch_app_data_path, generate_cert
+from src.utils import fetch_app_data_path
+from src.ssl import generate_cert
 
 logger = logging.getLogger('SpotifyAPI')
 

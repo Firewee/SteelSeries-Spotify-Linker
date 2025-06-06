@@ -25,7 +25,7 @@ Copy and paste the following information into the `config.json` file (located in
 {
     "spotify_client_id": "SPOTIFY_CLIENT_ID",
     "spotify_client_secret": "YOUR_SPOTIFY_CLIENT_SECRET",
-    "spotify_redirect_uri": "https://localhost:2408/callback",
+    "spotify_redirect_uri": "https://127.0.0.1:2408/callback",
     "local_port": 2408,
     ...
 }

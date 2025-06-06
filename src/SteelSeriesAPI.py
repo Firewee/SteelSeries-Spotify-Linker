@@ -49,18 +49,33 @@ class SteelSeriesAPI:
                         "image-data": [5 for _ in range(640)]
                     }
                 ]
+            }, {
+                "device-type": "screened-128x64",
+                "mode": "screen",
+                "datas": [
+                    {
+                        "has-text": False,
+                        "image-data": [5 for _ in range(640)]
+                    }
+                ]
             }]
         })
 
         logger.info("Binding game event")
 
     def send_frame(self, image):
+        # Ensure the image is a list of integers and pad with zeros to reach length 1024
+        if not isinstance(image, list):
+            raise ValueError("Image must be a list")
+        padded_image = image[:1024] + [0] * max(0, 1024 - len(image))
+
         self.send_data("/game_event", {
             "game": GAME,
             "event": EVENT,
             "data": {
                 "frame": {
-                    "image-data-128x40": image
+                    "image-data-128x40": image,
+                    "image-data-128x64": padded_image,
                 }
             }
         })
