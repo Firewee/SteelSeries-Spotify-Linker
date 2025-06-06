@@ -6,8 +6,8 @@ This section provides a step-by-step guide on how to set up a Spotify applicatio
 2. Once logged in, navigate to your profile and select `Dashboard`.
 3. On the `Dashboard` click on "Create app".
 4. Fill in all the required fields, as illustrated below. The configuration details are generally straightforward, with the exception of the "Redirect URI," which should point to 127.0.0.1 (localhost).
-
-![image](https://github.com/user-attachments/assets/ca8b597f-1292-4884-aed1-f8cb080d5701)
+   
+![image](https://github.com/user-attachments/assets/b49488c0-5e01-4799-9cdc-13c17814a7a8)
 
 > ⚠️ HTTP support is no longer supported in November 2025.
 
