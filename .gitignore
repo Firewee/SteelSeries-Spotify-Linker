@@ -4,3 +4,4 @@ venv
 .vscode
 
 launcher/build/*
+launcher_static.exe
