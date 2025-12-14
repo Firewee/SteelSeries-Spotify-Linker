@@ -6,8 +6,7 @@ class Config:
         "scrollbar_padding": 2,
         "text_padding_left": 30,
         "width": 128,
-        "height": 40,
-        "use_extended_font": False
+        "height": 40
     }
 
     def __init__(self, config=None):

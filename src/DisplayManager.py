@@ -30,14 +30,14 @@ class DisplayManager:
 
         self.user_preferences = UserPreferences()
         self.timer = Timer(config, self.user_preferences.get_preference('date_format'), self.user_preferences.get_preference('display_seconds'))
-        self.player = SpotifyPlayer(config, fps)
         
         # Load systray menu
         run_systray_async(self)
 
         self.load_preferences()
-        self.steelseries_api = SteelSeriesAPI()
+        self.player = SpotifyPlayer(config, self.user_preferences, fps)
         self.spotify_api = SpotifyAPI(self.user_preferences)
+        self.steelseries_api = SteelSeriesAPI()
 
     def load_preferences(self):
         self.user_preferences.load_preferences()
@@ -73,13 +73,12 @@ class DisplayManager:
             frame_data = None
             if (self.state == State.SHOW_CLOCK or not self.display_player) and self.display_clock:
                 frame_data = convert_to_bitmap(self.timer.get_image().getdata())
-            elif self.display_player:
+            elif (self.state == State.SHOW_PLAYER and self.display_player):
                 frame_data = convert_to_bitmap(self.player.next_step().getdata())
                 if self.player.pause_started and (
                         round(time() * 1000) - self.player.pause_started) > self.timer_threshold:
-                    self.player.pause_started = 0
-                    self.state = State.SHOW_CLOCK
-
+                    self.state = State.SHOW_CLOCK                
+            
             if frame_data is not None:
                 thread = Thread(target=self.send_frame, daemon=True, args=(self.steelseries_api, frame_data))
                 thread.start()
