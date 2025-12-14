@@ -5,3 +5,5 @@ venv
 
 launcher/build/*
 launcher_static.exe
+launcher.exe
+uninstall.exe

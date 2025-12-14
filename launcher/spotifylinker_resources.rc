@@ -10,12 +10,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Firewe"
             VALUE "FileDescription", "Spotify Linker Launcher"
-            VALUE "FileVersion", "1.2.5"
+            VALUE "FileVersion", "1.2.6"
             VALUE "InternalName", "launcher"
             VALUE "LegalCopyright", "© 2025 Firewe"
             VALUE "OriginalFilename", "launcher.exe"
             VALUE "ProductName", "Spotify Linker"
-            VALUE "ProductVersion", "1.2.5"
+            VALUE "ProductVersion", "1.2.6"
         END
     END
 END
