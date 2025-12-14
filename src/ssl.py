@@ -5,11 +5,12 @@ import logging
 
 logger = logging.getLogger("SpotifyLinker")
 
-"""
-This function generates a self-signed certificate and private key for HTTPS communication.
-It saves the certificate and key to the specified paths in the app data directory.
-"""
 def generate_cert():
+    """
+    This function generates a self-signed certificate and private key for HTTPS communication.
+    It saves the certificate and key to the specified paths in the app data directory.
+    """
+
     cert_file = fetch_app_data_path('cert.pem')
     key_file = fetch_app_data_path('key.pem')
 
